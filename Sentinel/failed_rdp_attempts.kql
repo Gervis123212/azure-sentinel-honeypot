@@ -1,0 +1,15 @@
+// KQL Query for Failed RDP Attempts (Event ID 4625)
+// This query identifies failed RDP logon attempts, extracts source IP and attempted account,
+// and enriches the data with geographical information using the geo_info_from_ip_address() function.
+//
+// This will be used in your Azure Sentinel Workbook to visualize RDP brute-force attacks.
+
+SecurityEvent
+| where EventID == 4625 // Event ID for failed logon attempts
+| extend IpAddress = tostring(parse_json(tostring(ParameterXml.sys.EventData.Data))['IpAddress'])
+| extend Account = tostring(parse_json(tostring(ParameterXml.sys.EventData.Data))['TargetUserName'])
+| where isnotempty(IpAddress) and isnotempty(Account)
+| summarize FailedCount = count() by IpAddress, Account, bin(TimeGenerated, 5m) // Summarize every 5 minutes
+| extend Geo = geo_info_from_ip_address(IpAddress)
+| project TimeGenerated, Account, IpAddress, FailedCount, Country=Geo.country, State=Geo.state, City=Geo.city
+| order by TimeGenerated desc

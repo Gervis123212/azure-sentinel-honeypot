@@ -1,0 +1,198 @@
+{
+  "name": "Cloud Honeypot IPs",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "0d86e48c-27a8-44a5-9a7b-d7f20992a92f",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://login.microsoftonline.com/<YOUR_TENANT_ID>/oauth2/token",
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "grant_type",
+              "value": "client_credentials"
+            },
+            {
+              "name": "client_id",
+              "value": "<YOUR_CLIENT_ID>"
+            },
+            {
+              "name": "client_secret",
+              "value": "<YOUR_CLIENT_SECRET>"
+            },
+            {
+              "name": "resource",
+              "value": "https://management.azure.com/"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        272,
+        -80
+      ],
+      "id": "18c5d4bc-4508-4b38-97e9-8229176946d4",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://management.azure.com/subscriptions/<YOUR_SUBSCRIPTION_ID>/resourcegroups/<YOUR_RESOURCE_GROUP>/providers/Microsoft.OperationalInsights/workspaces/<YOUR_WORKSPACE_NAME>/query?api-version=2017-10-01",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $json.access_token }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "query",
+              "value": "SecurityEvent | where EventID == 4625 | where TimeGenerated > ago(30d) | where isnotempty(IpAddress) | extend Geo = geo_info_from_ip_address(IpAddress) | summarize FailedCount = count() by IpAddress, Country = tostring(Geo.country), City =\n  tostring(Geo.city) | where FailedCount > 5 | order by FailedCount desc"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        480,
+        -80
+      ],
+      "id": "8b9e8961-a3b0-4e7a-aca1-f8421422a3c6",
+      "name": "Sentinel Node"
+    },
+    {
+      "parameters": {
+        "jsCode": "const rows = items[0].json.tables[0].rows;\n\n  const ipList = rows.map(row => {\n      const ip = row[0];\n      const country = row[1] || \"Unknown\";\n      const city = row[2] || \"Unknown\";\n      const count = row[3];\n\n      return ip.padEnd(16) + \" | \" + country.padEnd(15) + \" | \" + city.padEnd(15) + \" | Attempts: \" + count;\n  }).join('\\n');\n\n  const header = \"# Cloud Honeypot Threat Feed\\n# Generated: \" + new Date().toISOString() +\n  \"\\n# Total Unique Attackers: \" + rows.length + \"\\n\\n\";\n  const columnHeaders = \"IP ADDRESS       | COUNTRY         | CITY            | ATTACK VOLUME\\n----------------------------------------------------------------------\\n\";\n\n  const fileContent = header + columnHeaders + ipList;\n\n  return [{ json: { fileContent: fileContent } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        688,
+        -80
+      ],
+      "id": "e8af1b22-583b-48b2-b8f3-a3eb797fdc74",
+      "name": "Clean Data"
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "https://api.github.com/gists/<YOUR_GIST_ID>",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "githubApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{\n  JSON.stringify({\n    \"files\": {\n      \"honeypot_blocklist.txt\": {\n        \"content\": $json.fileContent\n      }\n    }\n  })\n  }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        944,
+        -80
+      ],
+      "id": "0fc1b5e3-ca4a-4b69-a67c-009eb624c01f",
+      "name": "Post to Gist",
+      "credentials": {
+        "githubApi": {
+          "id": "<YOUR_N8N_CREDENTIAL_ID>",
+          "name": "GitHub account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Sentinel Node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sentinel Node": {
+      "main": [
+        [
+          {
+            "node": "Clean Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clean Data": {
+      "main": [
+        [
+          {
+            "node": "Post to Gist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "<REDACTED>",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "<REDACTED>"
+  },
+  "id": "<REDACTED>",
+  "tags": [
+    {
+      "updatedAt": "2026-01-07T20:15:49.034Z",
+      "createdAt": "2026-01-07T20:15:49.034Z",
+      "id": "JMcunhCZiP2V5y7S",
+      "name": "Azure"
+    }
+  ]
+}

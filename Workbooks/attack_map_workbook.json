@@ -1,0 +1,48 @@
+{
+  "$schema": "https://github.com/Microsoft/Azure-Sentinel/blob/master/Workbooks/schema.json",
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "SecurityEvent\r\n| where EventID == 4625\r\n   | where isnotempty(IpAddress) and isnotempty(TargetUserName)\r\n   | extend Geo = geo_info_from_ip_address(IpAddress)\r\n   | summarize AttackCount = count() by Country=tostring(Geo.country), State=tostring(Geo.state), City=tostring(Geo.city), Latitude=todouble(Geo.latitude), Longitude=todouble(Geo.longitude)\r\n   | where isnotempty(Latitude) and isnotempty(Longitude)",
+        "size": 0,
+        "timeContext": {
+          "durationMs": 86400000
+        },
+        "queryType": 0,
+        "resourceType": "microsoft.resources/resourcegroups",
+        "visualization": "map",
+        "mapSettings": {
+          "locInfo": "LatLong",
+          "latitude": "Latitude",
+          "longitude": "Longitude",
+          "sizeSettings": "AttackCount",
+          "sizeAggregation": "Sum",
+          "labelSettings": "Country",
+          "legendMetric": "AttackCount",
+          "numberOfMetrics": 20,
+          "legendAggregation": "Sum",
+          "itemColorSettings": {
+            "nodeColorField": "AttackCount",
+            "colorAggregation": "Sum",
+            "type": "heatmap",
+            "heatmapPalette": "bluePurple"
+          },
+          "numberFormatSettings": {
+            "unit": 17,
+            "options": {
+              "style": "decimal",
+              "useGrouping": true
+            }
+          }
+        }
+      },
+      "name": "query - 0"
+    }
+  ],
+  "fallbackResourceIds": [
+    "azure monitor"
+  ]
+}

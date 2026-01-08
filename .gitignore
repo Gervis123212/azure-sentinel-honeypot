@@ -1,0 +1,67 @@
+# Sensitive Files - Credentials & Secrets
+*.env
+*.secret
+*.key
+*.pem
+*.pfx
+*.p12
+credentials.json
+secrets.json
+config.local.json
+.env.local
+.env.*.local
+
+# Azure CLI & Authentication
+.azure/
+*.publishsettings
+
+# n8n Local Data (if running locally)
+.n8n/
+n8n-local.json
+
+# Log Files
+*.log
+logs/
+*.log.*
+
+# Backup Files
+*.bak
+*.backup
+*~
+*.swp
+*.swo
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE & Editor Files
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Temporary Files
+tmp/
+temp/
+*.tmp
+
+# Personal Notes (not for public consumption)
+NOTES.txt
+TODO.txt
+scratch/
+personal/
+
+# Data Files (logs, pcaps, potentially sensitive)
+*.pcap
+*.pcapng
+*.evtx
+data/
+
+# Screenshots with Sensitive Information
+# (Keep descriptive screenshots in Pictures/, but ignore any with sensitive data)
+*-sensitive.*
+*-private.*
